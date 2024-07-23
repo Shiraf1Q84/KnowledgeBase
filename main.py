@@ -46,6 +46,23 @@ if api_key:
     st.session_state.api_key = api_key
     openai.api_key = api_key
 
+import streamlit as st
+import openai
+
+# APIキーを保存するためのセッション状態の変数
+if "api_key" not in st.session_state:
+    st.session_state.api_key = ""
+
+# APIキー入力欄
+st.title("OpenAI API キー入力")
+st.text_input("APIキーを入力してください:", key="api_key", value=st.session_state.api_key)
+
+# 入力されたAPIキーをopenaiに設定
+if st.button("APIキーを設定"):
+    openai.api_key = st.session_state.api_key
+    st.success("APIキーが設定されました")
+
+
 # PDFファイルが格納されているフォルダ
 pdf_folder = r"C:\Users\MI1935\Downloads\■■■2024-03-21_PROJECT_FILE\RAG\data"
 
