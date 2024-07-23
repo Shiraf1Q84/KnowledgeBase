@@ -63,8 +63,7 @@ if st.button("APIキーを設定"):
     st.success("APIキーが設定されました")
 
 
-# PDFファイルが格納されているフォルダ
-pdf_folder = r"C:\Users\MI1935\Downloads\■■■2024-03-21_PROJECT_FILE\RAG\data"
+
 
 
 # --- ベクトルデータベースの構築 (事前構築) ---
@@ -77,7 +76,7 @@ def build_vector_database():
         reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
         docs = reader.load_data()
         for document in docs:
-            document.metadata["filename"] = document.source  # メタデータにファイル名を追加
+            document.metadata["filename"] = document.text  # メタデータにファイル名を追加  # メタデータにファイル名を追加
         embed_model = OpenAIEmbedding(openai_api_key=openai.api_key)
 
         # Create a vector store index from the documents
