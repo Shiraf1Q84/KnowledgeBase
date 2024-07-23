@@ -67,8 +67,9 @@ if st.button("APIキーを設定"):
 pdf_folder = r"C:\Users\MI1935\Downloads\■■■2024-03-21_PROJECT_FILE\RAG\data"
 
 
+# --- ベクトルデータベースの構築 (事前構築) ---
 @st.cache_resource(show_spinner=False)
-def load_data():
+def build_vector_database():
     # データの読み込み中にスピナーを表示
     with st.spinner(text="Wait minites."):
 
@@ -81,9 +82,10 @@ def load_data():
         index = VectorStoreIndex.from_documents(docs)
         return index
 
+# ベクトルデータベースを構築
+index = build_vector_database()
 
-# load_data関数を実行してデータをロードし、そのインデックスを取得
-index = load_data()
+# --- チャットUI ---
 
 # チャット履歴の初期化
 if "messages" not in st.session_state.keys():
@@ -98,22 +100,8 @@ if openai.api_key:
         temperature=temperature,
     )
 
-# # チャットエンジン初期化
-# if "chat_engine" not in st.session_state.keys() and openai.api_key is not None:
-#     index = index  # これはインデックス変数が既に定義されていることを前提としています
-#     similarity_top_k = 5  # 類似するものを5つ検索
-#     postprocessor = SimilarityPostprocessor(similarity_top_k=similarity_top_k)
-#     st.session_state.chat_engine = index.as_chat_engine(
-#         chat_mode="condense_question",
-#         verbose=True,
-#         postprocessor=postprocessor,
-#         llm=llm  # llm変数も定義されていることを前提としています
-#     )
-
-
-# チャットエンジン初期化
+# --- チャットエンジンの初期化 (変更点) ---
 if "chat_engine" not in st.session_state.keys() and openai.api_key is not None:
-    index = index  # これはインデックス変数が既に定義されていることを前提としています
     similarity_top_k = 5  # 類似するものを5つ検索
     postprocessor = SimilarityPostprocessor(similarity_top_k=similarity_top_k)
     system_prompt = """・あなたはナレッジベースに提供されている書類に関する情報を提供するチャットボットです。
@@ -139,7 +127,6 @@ if "chat_engine" not in st.session_state.keys() and openai.api_key is not None:
         llm=llm,  # llm変数も定義されていることを前提としています
         system_prompt=system_prompt  # システムプロンプトを追加
     )
-
 
 
 # チャット処理
