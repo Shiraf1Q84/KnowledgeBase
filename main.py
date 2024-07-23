@@ -104,22 +104,20 @@ if openai.api_key:
 if "chat_engine" not in st.session_state.keys() and openai.api_key is not None:
     similarity_top_k = 5  # 類似するものを5つ検索
     postprocessor = SimilarityPostprocessor(similarity_top_k=similarity_top_k)
-    system_prompt = """・あなたはナレッジベースに提供されている書類に関する情報を提供するチャットボットです。
-・利用者の質問に、正確かつなるべく詳細に、法文を引用しながら答えることがあなたの役割です。
-・なるべく簡潔に答えてください。
-・情報は800文字以上、2000文字以内に収めるようにしてください。
-・詳細な情報が必要な場合は、利用者から追加の質問を促します。
-・マークダウン形式で見やすく出力してください。
-・情報源を明記して回答するように努めます。
-回答例＝｛本文｝＋参照箇所
-
-・複数の解釈がある場合は、それぞれを提示します。
-・与えられた情報だけでは判断できない場合には、判断できない旨を伝えます。
-・判断に不足している情報があれば、追加で情報を求めます。
-・必要に応じて、関連する情報源へのリンクを提供します。
-・中立的な立場を保ち、偏った情報提供は行いません。
-・プライバシーを尊重し、個人情報に関する質問には答えません。
-・違法行為や非倫理的な行為を助長する情報は提供しません。"""  # システムプロンプトを設定
+    system_prompt =
+    """
+    ・あなたはナレッジベースに提供されている書類に関する情報を提供するチャットボットです。
+    ・利用者の質問に、正確かつなるべく詳細に、参考資料を引用しながら答えることがあなたの役割です。
+    ・情報は800文字以上、4000文字以内に収めるようにしてください。
+    ・詳細な情報が必要な場合は、利用者から追加の質問を促します。
+    ・マークダウン形式で見やすく出力してください。
+    ・情報源を明記して回答するように努めます。
+    ・複数の解釈がある場合は、それぞれを提示します。
+    ・与えられた情報だけでは判断できない場合には、判断できない旨を伝えます。
+    ・判断に不足している情報があれば、追加で情報を求めます。
+    ・必要に応じて、関連する情報源へのリンクを提供します。
+    ・中立的な立場を保ち、偏った情報提供は行いません。
+    """  # システムプロンプトを設定
     st.session_state.chat_engine = index.as_chat_engine(
         chat_mode="context",
         verbose=True,
@@ -147,6 +145,10 @@ if openai.api_key  is not None:
                 st.session_state.messages.append(message)
 
 
+                # for source in response.source_nodes:
+                #     st.write(f"**参考箇所:**")
+                #     st.markdown(source.node.get_content())  # Display node content directly
+
                 for source in response.source_nodes:
-                    st.write(f"**参考箇所:**")
+                    st.write(f"**参考箇所:** {source.node.metadata['filename']}") # ファイル名をここに表示
                     st.markdown(source.node.get_content())  # Display node content directly
