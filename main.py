@@ -76,6 +76,8 @@ def build_vector_database():
         # ドキュメントの読み込みとインデックス作成
         reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
         docs = reader.load_data()
+        for document in docs:
+            document.metadata["filename"] = document.source  # メタデータにファイル名を追加
         embed_model = OpenAIEmbedding(openai_api_key=openai.api_key)
 
         # Create a vector store index from the documents
