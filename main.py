@@ -104,8 +104,7 @@ if openai.api_key:
 if "chat_engine" not in st.session_state.keys() and openai.api_key is not None:
     similarity_top_k = 5  # 類似するものを5つ検索
     postprocessor = SimilarityPostprocessor(similarity_top_k=similarity_top_k)
-    system_prompt =
-    """
+    system_prompt ="""
     ・あなたはナレッジベースに提供されている書類に関する情報を提供するチャットボットです。
     ・利用者の質問に、正確かつなるべく詳細に、参考資料を引用しながら答えることがあなたの役割です。
     ・情報は800文字以上、4000文字以内に収めるようにしてください。
